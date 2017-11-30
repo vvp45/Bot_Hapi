@@ -63,20 +63,35 @@ function requestWrapper(request) {
 
 // Initialize your connector
 const connector = new botbuilder.ChatConnector({
-    appId: '',
-    appPassword: ''
+    appId: '4228ae1d-0379-4ab3-b964-b697ca066846',
+    appPassword: 'gulLZV7617_+=orvjJKMX4|'
 });
 
 rserver.post('http://127.0.0.1:3978/api/messages',connector.listen());
-const bot = new botbuilder.UniversalBot(connector);
+const bot = new botbuilder.UniversalBot(connector, [
 //const botHandler = connector.listen();
 //=========================================================
 // Bots Dialogs
 //=========================================================
 
-bot.dialog('/', function (session) {
-    session.send("Hello World");
-});
+//const bot = new builder.UniversalBot(connector, [
+    function (session) {
+        session.send("Welcome to the TKIET College.");
+        //session.send("What is your name?");
+        botbuilder.Prompts.text(session, "How can I help You?");
+    },
+
+    function (session, results) {
+       // var msg = "How much department in your college?";
+     //if(msg == botbuilder.Prompts.text ) 
+       botbuilder.Prompts.text("6 departments in my college.");
+      //  break;
+    
+       //else 
+        //session.send("Sorry, I can not recognize.");
+        session.send(session, "Sorry, I can not recognize.");
+    }
+]);
 
 server.route({
     method: 'POST',
