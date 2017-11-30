@@ -1,3 +1,5 @@
+global.XMLHttpRequest = require("xhr2");
+
 'use strict';
 
 const Hapi = require('hapi');
