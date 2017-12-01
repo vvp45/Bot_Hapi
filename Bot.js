@@ -67,6 +67,18 @@ const connector = new botbuilder.ChatConnector({
     appPassword: 'rcgvfIWYS55#!{=pkVOW932',
 });
 
+
+/*var recognizer = new cognitiveservices.QnAMakerRecognizer({
+	knowledgeBaseId: 'set your kbid here', 
+	subscriptionKey: 'set your subscription key here'
+});
+
+var BasicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({ 
+	recognizers: [recognizer],
+	defaultMessage: 'No good match in FAQ.',
+	qnaThreshold: 0.5
+});*/
+
 rserver.post('http://127.0.0.1:3978/api/messages',connector.listen());
 //const bot = new botbuilder.UniversalBot(connector, [
 //const botHandler = connector.listen();
@@ -77,30 +89,31 @@ rserver.post('http://127.0.0.1:3978/api/messages',connector.listen());
 //const bot = new builder.UniversalBot(connector, [
     var bot = new botbuilder.UniversalBot(connector, [
         function (session) {
-            session.send("Welcome to the Pizza order.");
-            botbuilder.Prompts.time(session, "Please provide your order date and time (e.g.: June 6th at 5pm)");
+            session.send("Hello! Welcome to the TKIET Bot.");
+            botbuilder.Prompts.text(session, "What is your name?");
         },
         function (session, results) {
-            session.dialogData.reservationDate = botbuilder.EntityRecognizer.resolveTime([results.response]);
-            botbuilder.Prompts.text(session, "How many Items you want?");
+            session.dialogData.name = results.response;
+            botbuilder.Prompts.text(session, `${session.dialogData.name} How can I help you?`);
         },
         function (session, results) {
-            session.dialogData.partySize = results.response;
-            botbuilder.Prompts.text(session, "Who's name will this order be under?");
+            session.dialogData.help = results.response;
+            botbuilder.Prompts.text(session, "TKIET(Tatyasaheb kore Institute of Engineering and technology Waranangar).");
         },
     
-       /* function (session,results) {
-            session.dialogData.name = builder.EntityRecognizer.name([results.response]);
-            builder.Prompts.text(session, "")
-        }, */
+       function (session,results) {
+            session.dialogData.TKIET = results.response;
+            botbuilder.Prompts.text(session, "Sorry, I don't understand, I'm in learning");
+            session.endDialog();
+        } 
     
-        function (session, results) {
+        /*function (session, results) {
             session.dialogData.reservationName = results.response;
     
             // Process request and display reservation details
             session.send(`Reservation confirmed. Reservation details: <br/>Date/Time: ${session.dialogData.reservationDate} <br/>Party size: ${session.dialogData.partySize} <br/>Reservation name: ${session.dialogData.reservationName}`);
-            session.endDialog();
-        }
+            session.endDialog();*/
+       // }
     
        
     ]);

@@ -68,43 +68,27 @@ const connector = new botbuilder.ChatConnector({
 });
 
 rserver.post('http://127.0.0.1:3978/api/messages',connector.listen());
-//const bot = new botbuilder.UniversalBot(connector, [
-//const botHandler = connector.listen();
-//=========================================================
-// Bots Dialogs
-//=========================================================
 
-//const bot = new builder.UniversalBot(connector, [
-    var bot = new botbuilder.UniversalBot(connector, [
-        function (session) {
-            session.send("Welcome to the Pizza order.");
-            botbuilder.Prompts.time(session, "Please provide your order date and time (e.g.: June 6th at 5pm)");
-        },
-        function (session, results) {
-            session.dialogData.reservationDate = botbuilder.EntityRecognizer.resolveTime([results.response]);
-            botbuilder.Prompts.text(session, "How many Items you want?");
-        },
-        function (session, results) {
-            session.dialogData.partySize = results.response;
-            botbuilder.Prompts.text(session, "Who's name will this order be under?");
-        },
-    
-       /* function (session,results) {
-            session.dialogData.name = builder.EntityRecognizer.name([results.response]);
-            builder.Prompts.text(session, "")
-        }, */
-    
-        function (session, results) {
-            session.dialogData.reservationName = results.response;
-    
-            // Process request and display reservation details
-            session.send(`Reservation confirmed. Reservation details: <br/>Date/Time: ${session.dialogData.reservationDate} <br/>Party size: ${session.dialogData.partySize} <br/>Reservation name: ${session.dialogData.reservationName}`);
-            session.endDialog();
-        }
-    
-       
-    ]);
-    
+const bot = new botbuilder.UniversalBot(connector, [
+    (session, arg, next) => {
+        const BotName = 'TKIET Bot';
+        const Description = `A simple Bot for TKIET College`;
+
+        session.send(`Hi there! I'm ${BotName}`);
+        session.send(`Hey! What I can help you:\n\n, ${Description}`);    
+        botbuilder.Prompts.text(session, `What is your name?`);
+    },
+
+    (session, results, next) => {
+        session.endConversation(`Welcome, ${results.response}`);
+    }
+]);
+
+bot.dialog('help', (session) => {
+    session.endDialog('This is testing purpose bot');
+}).triggerAction(
+    {matches: /help/i}
+);
 
 server.route({
     method: 'POST',
@@ -132,3 +116,6 @@ server.start((err) => {
     }
     console.log(`Server running at: ${server.info.uri}`);
 });
+
+
+module.exports = bot;
