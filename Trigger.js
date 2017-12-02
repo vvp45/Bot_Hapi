@@ -86,8 +86,34 @@ const bot = new botbuilder.UniversalBot(connector, [
 
 bot.dialog('help', (session) => {
     session.endDialog('This is testing purpose bot');
-}).triggerAction(
-    {matches: /help/i}
+}).triggerAction({
+    matches: /help/i,
+    onSelectAction: (session, args) =>{
+    session.beginDialog(args.action, args);
+}
+});
+
+bot.dialog('register', [
+(session, args, next) => {
+    session.beginDialog(`getAttendeeInfo`);
+},
+ (session, results, next) => {
+    session.endConversation(`You said as ${results.response}`);
+ }
+]).triggerAction({
+    matches: /register/i}
+);
+
+bot.dialog('getAttendeeInfo', [
+    (session, args, next) => {
+ botbuilder.Prompts(session, `Do you have any diatary restriction?`);
+    },
+    (session, results, next) => {
+        const dietary = resutlts.response();
+        session.endDialogWithResult({response: dietary}); 
+    }
+]).triggerAction({
+    matches: 'getAttendeeInfo'}
 );
 
 server.route({
